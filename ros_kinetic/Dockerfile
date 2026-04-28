@@ -1,29 +1,27 @@
+# Imagen de ros1 kinetic
 FROM osrf/ros:kinetic-desktop-full
-
 ENV DEBIAN_FRONTEND=noninteractive
 
-# actualizar sistema
-RUN apt-get update && apt-get upgrade -y
-
-# herramientas básicas (nada específico aún)
-RUN apt-get install -y \
+#  actualiza e instala cosas necesarias
+RUN apt-get update && apt-get upgrade -y && apt-get install -y \
     git \
     nano \
     python-pip \
     python-rosinstall \
-    build-essential
+    build-essential \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN sudo rosdep init \
-    rosdep update
+RUN rosdep update
 
 #Crea el directorio
-RUN mkdir -p ~/baxter_ws/src  \
-    wstool init .
-    wstool merge https://raw.githubusercontent.com/RethinkRobotics/baxter/master/baxter_sdk.rosinstall \
-    wstool update   
+WORKDIR root/baxter_ws
 
-RUN cd baxter_ws \
-    cp src/baxter /baxter.sh ./
+RUN mkdir src && \
+    wstool init src && \
+    wstool merge -t src https://raw.githubusercontent.com/RethinkRobotics/baxter/master/baxter_sdk.rosinstall && \
+    wstool update -t src
+
+RUN cp src/baxter/baxter.sh .
 
 # inicializar entorno ROS automático
 RUN echo "source /opt/ros/kinetic/setup.bash" >> ~/.bashrc
