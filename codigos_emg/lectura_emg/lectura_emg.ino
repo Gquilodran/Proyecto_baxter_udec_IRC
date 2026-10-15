@@ -1,5 +1,4 @@
-int emg_signal;
-int voltage;
+int emg_signal=0;
 
 void setup() {
   Serial.begin(9600);
@@ -7,7 +6,9 @@ void setup() {
 
 void loop() {
   emg_signal = analogRead(A0);
-  //voltage = emg_signal*(5.0/1023.0);
   Serial.println(emg_signal);
-  delay(50);
+  delay(100);
 }
+
+
+
